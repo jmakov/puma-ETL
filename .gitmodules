@@ -1,0 +1,3 @@
+[submodule "lib/puma-env-vars"]
+	path = lib/puma-env-vars
+	url = git@github.com:jmakov/puma-env-vars.git
