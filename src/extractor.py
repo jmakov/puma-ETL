@@ -56,7 +56,7 @@ if __name__ == "__main__":
     # Start network recording. We'll filter network traffic by destination host ports.
     network_recording_command_flags = f'-t ' \
                                       f'-r 1024 ' \
-                                      f'-C 10 ' \
+                                      f'-C 1 ' \
                                       f'-n {PCAP_BASE_NAME} ' \
                                       f'-o {staging_path} ' \
                                       f'-i {interface_name} ' \
