@@ -1,2 +1,5 @@
 .idea
 venv
+/staging
+/backup
+/archiving
