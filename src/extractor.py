@@ -23,18 +23,24 @@ if __name__ == "__main__":
     logger = logging.getLogger()
     log.configure_logger(logger, this_script_name)
 
-    if len(sys.argv) >= 4:
+    if len(sys.argv) != 6:
         interface_name = sys.argv[1]
-        secrets_path = sys.argv[2]
-        staging_path = sys.argv[3]
+        pcap_file_size = sys.argv[2]
+        secrets_path = sys.argv[3]
+        pcap_staging_path = sys.argv[4]
+        fix_msgs_staging_path = sys.argv[5]
     else:
-        logger.exception(
-            "No interface name. Usage: extractor.py [interface_name] [abs path to secrets.yaml] [staging_path]")
+        msg = "Usage: extractor.py [interface name] " \
+              "[pcap size (in GiB)] " \
+              "[abs path to secrets.yaml] " \
+              "[abs path to network staging path] " \
+              "[abs path to MsgStorage staging path]"
+        print(msg, file=sys.stderr)
+        logger.exception("Arg error. Got: " + sys.argv + ", expected: " + msg)
         sys.exit()
 
     postrotate_script_path = path.get_network_recorder_postrotate_script_path()
     recorder_executable_path = path.get_puma_recorder_executable_path()
-    recorder_log_path = path.get_recorder_log_path()
     process_list = []
     quote_feed_names = []
     quote_feed_hosts = []
@@ -56,9 +62,9 @@ if __name__ == "__main__":
     # Start network recording. We'll filter network traffic by destination host ports.
     network_recording_command_flags = f'-t ' \
                                       f'-r 1024 ' \
-                                      f'-C 1 ' \
+                                      f'-C {pcap_file_size} ' \
                                       f'-n {PCAP_BASE_NAME} ' \
-                                      f'-o {staging_path} ' \
+                                      f'-o {pcap_staging_path} ' \
                                       f'-i {interface_name} ' \
                                       f'-Z {postrotate_script_path} ' \
                                       f'-f "{filter_expression}"'
@@ -68,8 +74,13 @@ if __name__ == "__main__":
     p = subprocess.Popen(args)
     process_list.append(p)
 
-    # wait for buffers of network_recording_command to inig
+    # wait for buffers of network_recording_command to init
     time.sleep(5)
+
+    # create FIX msg storage dir
+    msg_storage_path = pcap_staging_path + os.sep + "MsgStorage"
+    if not os.path.exists(msg_storage_path):
+        os.makedirs(msg_storage_path)
 
     # connect to exchanges and brokers
     for feed_name in quote_feed_names:
@@ -77,7 +88,7 @@ if __name__ == "__main__":
 
         # we have to set working dir (cwd) since Onyx FIX lib automatically creates MsgStorage directory and we want
         # to have it in the recorder log folder
-        p = subprocess.Popen([recorder_executable_path, secrets_path, feed_name], cwd=recorder_log_path)
+        p = subprocess.Popen([recorder_executable_path, secrets_path, feed_name], cwd=fix_msgs_staging_path)
         process_list.append(p)
 
     logger.info("All processes running")
