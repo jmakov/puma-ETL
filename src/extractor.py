@@ -16,12 +16,12 @@ from tools import log
 from tools import path
 
 PCAP_BASE_NAME = "puma-recorder"
+THIS_SCRIPT_NAME = os.path.basename(__file__)
+logger = logging.getLogger()
 
 
 if __name__ == "__main__":
-    this_script_name = os.path.basename(__file__)
-    logger = logging.getLogger()
-    log.configure_logger(logger, this_script_name)
+    log.configure_logger(logger, PCAP_BASE_NAME)
 
     if len(sys.argv) != 6:
         interface_name = sys.argv[1]
