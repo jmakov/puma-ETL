@@ -45,7 +45,7 @@ if __name__ == "__main__":
             os.rename(moved_fp, pretty_fp)
 
             # extract info from fn so we can save files to backup_path/[feed_name]/[year]-[month]
-            feed_name, timestamp = path.parse_transformer_result_fp(fp, pretty_fp, feed_name_account_data_map)
+            feed_name, timestamp = path.parse_transformer_result_fp(pretty_fp, feed_name_account_data_map)
 
             year_month_dir_path = tshutil.create_loader_dirs(backup_path, feed_name, timestamp)
             tshutil.move(pretty_fp, year_month_dir_path)

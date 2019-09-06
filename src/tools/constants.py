@@ -2,6 +2,7 @@ import enum
 
 PCAP_BASE_NAME = "puma-recorder"
 NETWORK_RECORDER_POSTROTATE_SCRIPT_NAME = "network_recorder_postrotate.sh"
+RAW_FILES_DIR_NAME = "raw"
 
 
 class Env(enum.Enum):

@@ -100,7 +100,16 @@ def get_transformer_pcap_resulting_fp(feed_name, sender_comp_id, ts):
 
 
 def parse_extractor_pcap_file(fn):
-    base_name, feed_name, sender_comp_id, _timestamp_rest = fn.split("_")
+    # we have 2 cases: "puma-recorder_[timestamp].pcap.zst" and
+    # "puma-recorder_[feed name]_[sender_comp_id]_[timestamp].pcap.zst
+    fn_splitted = fn.split("_")
+
+    if len(fn_splitted) == 2:
+        feed_name = constants.RAW_FILES_DIR_NAME
+        _timestamp_rest = fn_splitted[-1]
+    else:
+        base_name, feed_name, sender_comp_id, _timestamp_rest = fn_splitted
+
     timestamp = _timestamp_rest.split(".")[0]
     return feed_name, timestamp
 
@@ -136,8 +145,8 @@ def parse_extractor_msgstorage_file(fn, feed_name_account_data_map):
     return feed_name, timestamp
 
 
-def parse_transformer_result_fp(fp, fp_wo_extension, feed_name_account_data_map):
-    fn = fp.split(os.sep)[-1]
+def parse_transformer_result_fp(fp_wo_extension, feed_name_account_data_map):
+    fn = fp_wo_extension.split(os.sep)[-1]
 
     if constants.PCAP_BASE_NAME in fn:
         feed_name, timestamp = parse_extractor_pcap_file(fp_wo_extension)
