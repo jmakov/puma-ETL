@@ -30,7 +30,7 @@ if __name__ == "__main__":
     tshutil.create_dir(loader_archive_staging_path)
 
     fp_from_loader_backup_staging_path = loader_backup_staging_path + os.sep + "*." \
-        + constants.FileExtension.LOADER_BACKUP_DONE
+        + constants.FileExtension.LOADER_BACKUP_DONE.value
     files_to_move = tshutil.find_files(fp_from_loader_backup_staging_path)
 
     while True:
@@ -41,7 +41,7 @@ if __name__ == "__main__":
             moved_fp = loader_archive_staging_path + os.sep + fn
 
             # prettify file naming
-            pretty_fp = path.remove_fp_extension(moved_fp, constants.FileExtension.LOADER_BACKUP_DONE)
+            pretty_fp = path.remove_fp_extension(moved_fp, constants.FileExtension.LOADER_BACKUP_DONE.value)
             os.rename(moved_fp, pretty_fp)
 
             # extract info from fn so we can save files to backup_path/[feed_name]/[year]-[month]

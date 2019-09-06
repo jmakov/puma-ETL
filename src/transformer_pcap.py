@@ -30,7 +30,7 @@ logger = logging.getLogger()
 
 
 def extract_incomming_msgs_for_account(compressed_pcap_fp, feed_name, sender_comp_id):
-    tmp_fn = compressed_pcap_fp + "." + constants.FileExtension.TMP
+    tmp_fn = compressed_pcap_fp + "." + constants.FileExtension.TMP.value
 
     # construct resulting file name of the form puma-recorder_[feed name]_[acc ID]_[timestamp].pcap.zst
     timestamp = path.get_extractor_pcap_timestamp_from_fp(compressed_pcap_fp)
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     transformer_pcap_staging_path = path.get_transformer_pcap_staging_path()
     feed_name_account_data_map = tshutil.get_fix_feed_name_sendercompid_map(secrets_fp)
     pcap_fp_pattern_to_move = extractor_pcap_staging_path + os.sep + "*." \
-        + constants.FileExtension.EXTRACTOR_PCAP_DONE
+        + constants.FileExtension.EXTRACTOR_PCAP_DONE.value
 
     tshutil.create_dir(transformer_pcap_staging_path)
 
@@ -70,8 +70,8 @@ if __name__ == "__main__":
 
             fn = fp.split(os.sep)[-1]
             moved_fp = transformer_pcap_staging_path + os.sep + fn
-            pretty_fp = path.remove_fp_extension(moved_fp, constants.FileExtension.EXTRACTOR_PCAP_DONE)
-            compressed_fp = pretty_fp + "." + constants.FileExtension.ZST_COMPRESSED
+            pretty_fp = path.remove_fp_extension(moved_fp, constants.FileExtension.EXTRACTOR_PCAP_DONE.value)
+            compressed_fp = pretty_fp + "." + constants.FileExtension.ZST_COMPRESSED.value
 
             command = f"zstd --rm -T1 -q -1 {moved_fp} -o {compressed_fp}"
             tsubprocess.run_blocking_command(command)

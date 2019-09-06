@@ -29,9 +29,9 @@ if __name__ == "__main__":
     secrets_fp = path.get_secrets_path()
     feed_name_account_data_map = tshutil.get_fix_feed_name_sendercompid_map(secrets_fp)
     fp_from_transformer_pcap = transformer_pcap_staging_path + os.sep + "*." \
-        + constants.FileExtension.TRANSFORMER_DONE
+        + constants.FileExtension.TRANSFORMER_DONE.value
     fp_from_transformer_msgstorage = transformer_msgstorage_staging_path + os.sep + "*." \
-        + constants.FileExtension.TRANSFORMER_DONE
+        + constants.FileExtension.TRANSFORMER_DONE.value
 
     tshutil.create_dir(loader_backup_staging_path)
 
@@ -46,7 +46,7 @@ if __name__ == "__main__":
             moved_fp = loader_backup_staging_path + os.sep + fn
 
             # prettify file naming
-            pretty_fp = path.remove_fp_extension(moved_fp, constants.FileExtension.TRANSFORMER_DONE)
+            pretty_fp = path.remove_fp_extension(moved_fp, constants.FileExtension.TRANSFORMER_DONE.value)
             os.rename(moved_fp, pretty_fp)
 
             # extract info from fn so we can save files to backup_path/[feed_name]/[year]-[month]

@@ -27,12 +27,12 @@ def create_dir(dir_name):
 
 
 def rename_transformer_done(fp):
-    fin_fn = fp + "." + constants.FileExtension.TRANSFORMER_DONE
+    fin_fn = fp + "." + constants.FileExtension.TRANSFORMER_DONE.value
     os.rename(fp, fin_fn)
 
 
 def rename_loader_backup_done(fp):
-    fin_fn = fp + "." + constants.FileExtension.TRANSFORMER_DONE
+    fin_fn = fp + "." + constants.FileExtension.TRANSFORMER_DONE.value
     os.rename(fp, fin_fn)
 
 

@@ -5,7 +5,6 @@ import sys
 from tools import constants
 
 logger = logging.getLogger(__name__)
-NETWORK_RECORDER_POSTROTATE_SCRIPT_NAME = "network_recorder_postrotate.sh"
 
 
 def _get_staging_sub_path(dir_name):
@@ -15,7 +14,7 @@ def _get_staging_sub_path(dir_name):
 def _get_env_var(env_var):
     var = os.getenv(env_var)
 
-    if var is None:
+    if var is None or var is "":
         msg = f"Not defined: {env_var}"
         logger.exception(msg)
         raise RuntimeError(msg)
@@ -23,7 +22,7 @@ def _get_env_var(env_var):
 
 
 def is_dev_environemnt():
-    returned_env_var = _get_env_var(constants.Env.DEV_ENV)
+    returned_env_var = _get_env_var(constants.Env.DEV_ENV.value)
     return False if returned_env_var is None else True
 
 
@@ -32,7 +31,7 @@ def get_scripts_path():
 
 
 def get_network_recorder_postrotate_script_path():
-    return get_scripts_path() + os.sep + NETWORK_RECORDER_POSTROTATE_SCRIPT_NAME
+    return get_scripts_path() + os.sep + constants.NETWORK_RECORDER_POSTROTATE_SCRIPT_NAME
 
 
 def get_network_recorder_command_path():
@@ -52,35 +51,35 @@ def get_etl_log_path():
 
 
 def get_secrets_path():
-    return _get_env_var(constants.Env.SECRETS_PATH)
+    return _get_env_var(constants.Env.SECRETS_PATH.value)
 
 
 def get_staging_path():
-    return _get_env_var(constants.Env.STAGING_PATH)
+    return _get_env_var(constants.Env.STAGING_PATH.value)
 
 
 def get_extractor_pcap_staging_path():
-    return _get_staging_sub_path(constants.DirName.EXTRACTOR_STAGING)
+    return _get_staging_sub_path(constants.DirName.EXTRACTOR_STAGING.value)
 
 
 def get_extractor_staging_msgstorage_path():
-    return _get_staging_sub_path(constants.DirName.MSGSTORAGE)
+    return _get_staging_sub_path(constants.DirName.MSGSTORAGE.value)
 
 
 def get_transformer_pcap_staging_path():
-    return _get_staging_sub_path(constants.DirName.TRANSFORMER_PCAP_STAGING)
+    return _get_staging_sub_path(constants.DirName.TRANSFORMER_PCAP_STAGING.value)
 
 
 def get_transformer_msgstorage_staging_path():
-    return _get_staging_sub_path(constants.DirName.TRANSFORMER_MSGSTORAGE_STAGING)
+    return _get_staging_sub_path(constants.DirName.TRANSFORMER_MSGSTORAGE_STAGING.value)
 
 
 def get_loader_backup_staging_path():
-    return _get_staging_sub_path(constants.DirName.LOADER_BACKUP)
+    return _get_staging_sub_path(constants.DirName.LOADER_BACKUP.value)
 
 
 def get_loader_archiver_staging_path():
-    return _get_staging_sub_path(constants.DirName.LOADER_ARCHIVER)
+    return _get_staging_sub_path(constants.DirName.LOADER_ARCHIVER.value)
 
 
 def get_extractor_pcap_timestamp_from_fp(fp):
@@ -96,8 +95,8 @@ def get_transformer_pcap_resulting_fp(feed_name, sender_comp_id, ts):
            + feed_name + "_" \
            + sender_comp_id + "_" \
            + ts + "." \
-           + constants.FileExtension.PCAP + "." \
-           + constants.FileExtension.ZST_COMPRESSED
+           + constants.FileExtension.PCAP.value + "." \
+           + constants.FileExtension.ZST_COMPRESSED.value
 
 
 def parse_extractor_pcap_file(fn):

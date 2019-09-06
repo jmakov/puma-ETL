@@ -1,16 +1,16 @@
-from enum import Enum
-
+import enum
 
 PCAP_BASE_NAME = "puma-recorder"
+NETWORK_RECORDER_POSTROTATE_SCRIPT_NAME = "network_recorder_postrotate.sh"
 
 
-class Env(Enum):
+class Env(enum.Enum):
     DEV_ENV = "PUMA_DEV_ENV"
     SECRETS_PATH = "PUMA_SECRETS_PATH"
     STAGING_PATH = "PUMA_ETL_STAGING_PATH"
 
 
-class DirName(Enum):
+class DirName(enum.Enum):
     EXTRACTOR_STAGING = "extractor"
     TRANSFORMER_PCAP_STAGING = "transformer_pcap"
     TRANSFORMER_MSGSTORAGE_STAGING = "transformer_msgstorage"
@@ -19,7 +19,7 @@ class DirName(Enum):
     MSGSTORAGE = "MsgStorage"
 
 
-class FileExtension(Enum):
+class FileExtension(enum.Enum):
     EXTRACTOR_MSGSTORAGE_REDUNDANT_FILES = "state.backup"
     EXTRACTOR_PCAP_DONE = "done"
     EXTRACTOR_MSGSTORAGE_DONE = "summary.backup"
