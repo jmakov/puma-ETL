@@ -7,7 +7,7 @@ PCAP_BASE_NAME = "puma-recorder"
 class Env(Enum):
     DEV_ENV = "PUMA_DEV_ENV"
     SECRETS_PATH = "PUMA_SECRETS_PATH"
-    STAGING_PATH = "PUMA-ETL_STAGING_PATH"
+    STAGING_PATH = "PUMA_ETL_STAGING_PATH"
 
 
 class DirName(Enum):
