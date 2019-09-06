@@ -1,32 +1,75 @@
 import logging
 import os
-import subprocess
-import shlex
-import sys
 import time
 
-import yaml
-
+from tools import constants
 from tools import log
 from tools import path
+from tools import tshutil
+from tools import tsubprocess
 
 THIS_SCRIPT_NAME = os.path.basename(__file__)
+SLEEP = 60
 logger = logging.getLogger()
+
+
+def filter_msgs(fp_to_filter, original_fp, pattern, resulting_fp_extension):
+    res_fp = original_fp + "." + resulting_fp_extension + "." + constants.FileExtension.ZST_COMPRESSED
+
+    # With some patterns we might get no results. Since we don't want to produce files with 0 size, we check first
+    # if we have any matches.
+    check_match_command = f"zstdgrep -m 1 '{pattern} {fp_to_filter}"
+
+    if tsubprocess.match_found(check_match_command):
+        command = f"zstdgrep '{pattern}' {fp_to_filter} | zstd -q -T1 -1 -o {res_fp}"
+        tsubprocess.run_blocking_command(command)
+        tshutil.rename_transformer_done(res_fp)
+
+
+def delete_extractor_msgstore_redundant_files(fp_pattern):
+    logger.info("Deleting redundant files")
+
+    files_to_delete = tshutil.find_files(fp_pattern)
+
+    for fp in files_to_delete:
+        os.remove(fp)
 
 
 if __name__ == "__main__":
     log.configure_logger(logger, THIS_SCRIPT_NAME)
+    secrets_fp = path.get_secrets_path()
+    extractor_msgstorage_staging_path = path.get_extractor_staging_msgstorage_path()
+    transformer_msgstorage_staging_path = path.get_transformer_msgstorage_staging_path()
+    msgs_fp_pattern_to_move = extractor_msgstorage_staging_path + os.sep + "*." \
+        + constants.FileExtension.EXTRACTOR_MSGSTORAGE_DONE
+    files_to_delete_pattern = extractor_msgstorage_staging_path + os.sep + "*." \
+        + constants.FileExtension.EXTRACTOR_MSGSTORAGE_REDUNDANT_FILES
 
-    if len(sys.argv) != 6:
-        secrets_path = sys.argv[3]
-        pcap_staging_path = sys.argv[4]
-        fix_msgs_staging_path = sys.argv[5]
-    else:
-        msg = "aUsage: extractor.py [interface name] " \
-              "[pcap size (in GiB)] " \
-              "[abs path to secrets.yaml] " \
-              "[abs path to network staging path] " \
-              "[abs path to MsgStorage staging path]"
-        print(msg, file=sys.stderr)
-        logger.exception("Arg error. Got: " + sys.argv + ", expected: " + msg)
-        sys.exit()
+    tshutil.create_dir(transformer_msgstorage_staging_path)
+
+    while True:
+        files_to_transform = tshutil.find_files(msgs_fp_pattern_to_move)
+        logger.info(f"Found files to transform: f{files_to_transform}")
+
+        for fp in files_to_transform:
+            logger.info(f"Processing: {fp}")
+            tshutil.move(fp, transformer_msgstorage_staging_path)
+
+            fn = fp.split(os.sep)[-1]
+            target_fp = transformer_msgstorage_staging_path + os.sep + fn
+            pretty_fp = path.remove_fp_extension(target_fp, constants.FileExtension.EXTRACTOR_MSGSTORAGE_DONE)
+            compressed_fp = pretty_fp + "." + constants.FileExtension.ZST_COMPRESSED
+
+            command = f"zstd --rm -q -1 {target_fp} -o {compressed_fp}"
+            tsubprocess.run_blocking_command(command)
+
+            filter_msgs(compressed_fp, pretty_fp, constants.FIXMsgField.TICK, constants.FileExtension.TICKS)
+            filter_msgs(compressed_fp, pretty_fp, constants.FIXMsgField.QUOTE, constants.FileExtension.QUOTES)
+            filter_msgs(compressed_fp, pretty_fp, constants.FIXMsgField.FIN_INSTRUMENT_LIST,
+                        constants.FileExtension.FIN_INSTRUMENTS_LIST)
+
+            # mark compressed original as processed so we can include it in the next stage
+            tshutil.rename_transformer_done(compressed_fp)
+
+        delete_extractor_msgstore_redundant_files(files_to_delete_pattern)
+        time.sleep(SLEEP)

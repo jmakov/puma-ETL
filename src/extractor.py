@@ -12,38 +12,38 @@ import time
 
 import yaml
 
+from tools import constants
 from tools import log
 from tools import path
+from tools import tshutil
 
-PCAP_BASE_NAME = "puma-recorder"
 THIS_SCRIPT_NAME = os.path.basename(__file__)
 logger = logging.getLogger()
 
 
 if __name__ == "__main__":
-    log.configure_logger(logger, PCAP_BASE_NAME)
+    log.configure_logger(logger, THIS_SCRIPT_NAME)
 
-    if len(sys.argv) != 6:
+    if len(sys.argv) == 3:
         interface_name = sys.argv[1]
         pcap_file_size = sys.argv[2]
-        secrets_path = sys.argv[3]
-        pcap_staging_path = sys.argv[4]
-        fix_msgs_staging_path = sys.argv[5]
     else:
-        msg = "Usage: extractor.py [interface name] " \
-              "[pcap size (in GiB)] " \
-              "[abs path to secrets.yaml] " \
-              "[abs path to network staging path] " \
-              "[abs path to MsgStorage staging path]"
+        msg = "Usage: extractor.py [interface name] [pcap size (in GiB)]"
         print(msg, file=sys.stderr)
-        logger.exception("Arg error. Got: " + sys.argv + ", expected: " + msg)
+        logger.exception(msg)
         sys.exit()
 
+    secrets_path = path.get_secrets_path()
     postrotate_script_path = path.get_network_recorder_postrotate_script_path()
     recorder_executable_path = path.get_puma_recorder_executable_path()
+    extractor_staging_path = path.get_extractor_pcap_staging_path()
+    msg_storage_path = path.get_extractor_staging_msgstorage_path()
     process_list = []
     quote_feed_names = []
     quote_feed_hosts = []
+
+    tshutil.create_dir(extractor_staging_path)
+    tshutil.create_dir(msg_storage_path)
 
     # parse secrets yaml file to get feed names and hosts
     with open(secrets_path) as f:
@@ -63,8 +63,8 @@ if __name__ == "__main__":
     network_recording_command_flags = f'-t ' \
                                       f'-r 1024 ' \
                                       f'-C {pcap_file_size} ' \
-                                      f'-n {PCAP_BASE_NAME} ' \
-                                      f'-o {pcap_staging_path} ' \
+                                      f'-n {constants.PCAP_BASE_NAME} ' \
+                                      f'-o {extractor_staging_path} ' \
                                       f'-i {interface_name} ' \
                                       f'-Z {postrotate_script_path} ' \
                                       f'-f "{filter_expression}"'
@@ -77,18 +77,13 @@ if __name__ == "__main__":
     # wait for buffers of network_recording_command to init
     time.sleep(5)
 
-    # create FIX msg storage dir
-    msg_storage_path = pcap_staging_path + os.sep + "MsgStorage"
-    if not os.path.exists(msg_storage_path):
-        os.makedirs(msg_storage_path)
-
     # connect to exchanges and brokers
     for feed_name in quote_feed_names:
         logger.info(f"Starting: {feed_name}")
 
         # we have to set working dir (cwd) since Onyx FIX lib automatically creates MsgStorage directory and we want
         # to have it in the recorder log folder
-        p = subprocess.Popen([recorder_executable_path, secrets_path, feed_name], cwd=fix_msgs_staging_path)
+        p = subprocess.Popen([recorder_executable_path, secrets_path, feed_name], cwd=extractor_staging_path)
         process_list.append(p)
 
     logger.info("All processes running")

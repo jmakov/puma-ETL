@@ -15,85 +15,69 @@ recorded FIX msgs there.
 * Extract packets with `ngrep`
 """
 import logging
-import glob
 import os
-import shutil
-import sys
-import shlex
-import subprocess
 import time
 
-import yaml
-
+from tools import constants
 from tools import log
+from tools import path
+from tools import tshutil
+from tools import tsubprocess
 
 THIS_SCRIPT_NAME = os.path.basename(__file__)
-SLEEP = 10
+SLEEP = 60
 logger = logging.getLogger()
 
 
-def get_acc_identification_data(secrets_fp):
-    account_data = []
+def extract_incomming_msgs_for_account(compressed_pcap_fp, feed_name, sender_comp_id):
+    tmp_fn = compressed_pcap_fp + "." + constants.FileExtension.TMP
 
-    with open(secrets_fp) as f:
-        content = yaml.load(f, Loader=yaml.FullLoader)
+    # construct resulting file name of the form puma-recorder_[feed name]_[acc ID]_[timestamp].pcap.zst
+    timestamp = path.get_extractor_pcap_timestamp_from_fp(compressed_pcap_fp)
+    res_fp = path.get_transformer_pcap_resulting_fp(feed_name, sender_comp_id, timestamp)
 
-        for feed in content["exchange_feeds"]:
-            account_data.append(feed["sender_comp_ID"])
+    # With some patterns we might get no results. Since we don't want to produce files with 0 size, we check first
+    # if we have any matches.
+    pattern = f"'56={sender_comp_id}'"
+    check_match_command = f"zstdgrep -m 1 {pattern} {compressed_pcap_fp}"
 
-    return account_data
-
-
-def move_files_to_transformer_pcap_staging_area(files_to_find, new_staging_path):
-    files_for_transfer = glob.glob(files_to_find)
-    logging.info("Found: " + files_for_transfer)
-
-    for file in files_for_transfer:
-        logging.info("Moving file: ") + file
-        shutil.move(file, new_staging_path)
-
-
-def extract_incomming_msgs_for_account(input_pcap_path, acc_no):
-    tmp_fn = acc_no + ".pcap"
-    res_fn = acc_no + ".pcap.zst"
-    command_str = f"zstdcat {input_pcap_path} | " \
-                  f"ngrep -I - -O {tmp_fn} -q '56={acc_no}' > /dev/null && " \
-                  f"zstd --rm -q -1 {tmp_fn} -o {res_fn}"
-    args = shlex.split(command_str)   # determines correct args tokenization
-
-    logger.info(f"Running: {args}")
-    subprocess.call(args)
-
-    fin_fn = res_fn + ".transformer_done"
-    os.rename(res_fn, fin_fn)
+    if tsubprocess.match_found(check_match_command):
+        command = f"zstdcat {compressed_pcap_fp} | " \
+                      f"ngrep -I - -O {tmp_fn} -q {pattern} > /dev/null && " \
+                      f"zstd -T1 --rm -q -1 {tmp_fn} -o {res_fp}"
+        tsubprocess.run_blocking_command(command)
+        tshutil.rename_transformer_done(res_fp)
 
 
 if __name__ == "__main__":
     log.configure_logger(logger, THIS_SCRIPT_NAME)
+    secrets_fp = path.get_secrets_path()
+    extractor_pcap_staging_path = path.get_extractor_pcap_staging_path()
+    transformer_pcap_staging_path = path.get_transformer_pcap_staging_path()
+    feed_name_account_data_map = tshutil.get_fix_feed_name_sendercompid_map(secrets_fp)
+    pcap_fp_pattern_to_move = extractor_pcap_staging_path + os.sep + "*." \
+        + constants.FileExtension.EXTRACTOR_PCAP_DONE
 
-    if len(sys.argv) != 4:
-        secrets_fp = sys.argv[1]
-        pcap_staging_fp = sys.argv[2]
-        transformer_pcap_staging_path = sys.argv[3]
-    else:
-        msg = "aUsage: extractor.py [interface name] " \
-              "[pcap size (in GiB)] " \
-              "[abs path to secrets.yaml] " \
-              "[abs path to network staging path] " \
-              "[abs path to MsgStorage staging path]"
-        print(msg, file=sys.stderr)
-        logger.exception("Arg error. Got: " + sys.argv + ", expected: " + msg)
-        sys.exit()
-
-    pcap_files_to_find = pcap_staging_fp + os.sep + "*.zst"
-    account_data = get_acc_identification_data(secrets_fp)
+    tshutil.create_dir(transformer_pcap_staging_path)
 
     while True:
-        move_files_to_transformer_pcap_staging_area(pcap_files_to_find, transformer_pcap_staging_path)
-        files_for_extraction = glob.glob(transformer_pcap_staging_path)
+        files_to_transform = tshutil.find_files(pcap_fp_pattern_to_move)
+        logger.info(f"Found files to transform: f{files_to_transform}")
 
-        for file in files_for_extraction:
-            for acc_no in account_data:
-                extract_incomming_msgs_for_account(file, acc_no)
+        for fp in files_to_transform:
+            logger.info(f"Processing: {fp}")
+            tshutil.move(fp, transformer_pcap_staging_path)
 
+            fn = fp.split(os.sep)[-1]
+            moved_fp = transformer_pcap_staging_path + os.sep + fn
+            pretty_fp = path.remove_fp_extension(moved_fp, constants.FileExtension.EXTRACTOR_PCAP_DONE)
+            compressed_fp = pretty_fp + "." + constants.FileExtension.ZST_COMPRESSED
+
+            command = f"zstd --rm -T1 -q -1 {moved_fp} -o {compressed_fp}"
+            tsubprocess.run_blocking_command(command)
+
+            for feed_name, sender_comp_id in feed_name_account_data_map:
+                extract_incomming_msgs_for_account(compressed_fp, feed_name, sender_comp_id)
+
+            tshutil.rename_transformer_done(compressed_fp)
         time.sleep(SLEEP)

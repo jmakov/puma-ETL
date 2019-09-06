@@ -4,3 +4,4 @@ INSTALL_PATH=/opt/puma/puma-ETL
 
 sudo rm -rf $INSTALL_PATH
 sudo rm -rf /var/log/puma/puma-ETL
+sudo rm -rf $PUMA_ETL_STAGING_PATH
