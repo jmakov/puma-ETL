@@ -22,7 +22,7 @@ def _get_env_var(env_var):
 
 
 def is_dev_environemnt():
-    returned_env_var = _get_env_var(constants.Env.DEV_ENV.value)
+    returned_env_var = os.getenv(constants.Env.DEV_ENV.value)
     return False if returned_env_var is None else True
 
 
@@ -63,7 +63,7 @@ def get_extractor_pcap_staging_path():
 
 
 def get_extractor_staging_msgstorage_path():
-    return _get_staging_sub_path(constants.DirName.MSGSTORAGE.value)
+    return get_extractor_pcap_staging_path() + os.sep + constants.DirName.MSGSTORAGE.value
 
 
 def get_transformer_pcap_staging_path():

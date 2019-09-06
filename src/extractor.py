@@ -42,7 +42,6 @@ if __name__ == "__main__":
     quote_feed_names = []
     quote_feed_hosts = []
 
-    tshutil.create_dir(extractor_staging_path)
     tshutil.create_dir(msg_storage_path)
 
     # parse secrets yaml file to get feed names and hosts
@@ -83,7 +82,7 @@ if __name__ == "__main__":
 
         # we have to set working dir (cwd) since Onyx FIX lib automatically creates MsgStorage directory and we want
         # to have it in the recorder log folder
-        p = subprocess.Popen([recorder_executable_path, secrets_path, feed_name], cwd=extractor_staging_path)
+        p = subprocess.Popen([recorder_executable_path, feed_name], cwd=extractor_staging_path)
         process_list.append(p)
 
     logger.info("All processes running")
