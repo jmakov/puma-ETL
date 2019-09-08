@@ -1,6 +1,8 @@
 import enum
 
-PCAP_BASE_NAME = "puma-recorder"
+FN_FROM_EXTRACTOR_SPLIT = "_"
+FN_FROM_TRANSFORMER_SPLIT = "-"
+PCAP_BASE_NAME = "pumarecorder"
 NETWORK_RECORDER_POSTROTATE_SCRIPT_NAME = "network_recorder_postrotate.sh"
 RAW_FILES_DIR_NAME = "raw"
 

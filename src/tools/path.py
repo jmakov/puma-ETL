@@ -82,32 +82,28 @@ def get_loader_archiver_staging_path():
     return _get_staging_sub_path(constants.DirName.LOADER_ARCHIVER.value)
 
 
-def get_extractor_pcap_timestamp_from_fp(fp):
-    fn = fp.split(os.sep)[-1]
-    base_fn = fn.split(".")[0]
-    timestamp = base_fn.split("_")[1]
-    return timestamp
-
-
 def get_transformer_pcap_resulting_fp(feed_name, sender_comp_id, ts):
     return get_transformer_pcap_staging_path() \
-           + constants.PCAP_BASE_NAME + "_" \
-           + feed_name + "_" \
-           + sender_comp_id + "_" \
+           + os.sep \
+           + constants.PCAP_BASE_NAME + constants.FN_FROM_TRANSFORMER_SPLIT \
+           + feed_name + constants.FN_FROM_TRANSFORMER_SPLIT \
+           + sender_comp_id + constants.FN_FROM_TRANSFORMER_SPLIT \
            + ts + "." \
            + constants.FileExtension.PCAP.value + "." \
            + constants.FileExtension.ZST_COMPRESSED.value
 
 
 def parse_extractor_pcap_file(fn):
-    # we have 2 cases: "puma-recorder_[timestamp].pcap.zst" and
-    # "puma-recorder_[feed name]_[sender_comp_id]_[timestamp].pcap.zst
-    fn_splitted = fn.split("_")
+    # we have 2 cases: "pumarecorder_[timestamp].pcap.zst" (from extractor)and
+    # "pumarecorder-[feed_name]-[sender.compID]-[timestamp].pcap.zst (from transformer)
+    test_split = fn.split(constants.FN_FROM_EXTRACTOR_SPLIT)
 
-    if len(fn_splitted) == 2:
+    if len(test_split) == 2:
+        # we got the first case - raw pcap file
         feed_name = constants.RAW_FILES_DIR_NAME
-        _timestamp_rest = fn_splitted[-1]
+        _timestamp_rest = test_split[-1]
     else:
+        fn_splitted = fn.split(constants.FN_FROM_TRANSFORMER_SPLIT)
         base_name, feed_name, sender_comp_id, _timestamp_rest = fn_splitted
 
     timestamp = _timestamp_rest.split(".")[0]
@@ -132,7 +128,7 @@ def parse_extractor_msgstorage_file(fn, feed_name_account_data_map):
         sender_comp_id = _feed_info_split[0] + "." + _feed_info_split[1]
 
     # identify feed name from sender_comp_id
-    for k, v in feed_name_account_data_map:
+    for k, v in feed_name_account_data_map.items():
         if sender_comp_id == v:
             feed_name = k
             break

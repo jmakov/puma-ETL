@@ -43,7 +43,7 @@ def get_fix_feed_name_sendercompid_map(secrets_fp):
         content = yaml.load(f, Loader=yaml.FullLoader)
 
         for feed in content["exchange_feeds"]:
-            feed_name_account_data_map[feed["name"]] = feed["sended_comp_ID"]
+            feed_name_account_data_map[feed["name"]] = str(feed["sender_comp_ID"])
 
     return feed_name_account_data_map
 
