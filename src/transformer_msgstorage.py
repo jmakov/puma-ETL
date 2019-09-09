@@ -19,7 +19,7 @@ def filter_msgs(fp_to_filter, original_fp, pattern, resulting_fp_extension):
 
     # With some patterns we might get no results. Since we don't want to produce files with 0 size, we check first
     # if we have any matches.
-    check_match_command = f"zstdgrep -m 1 '{pattern} {fp_to_filter}"
+    check_match_command = f"zstdgrep -m 1 '{pattern}' {fp_to_filter}"
 
     if tsubprocess.match_found(check_match_command):
         command = f"zstdgrep '{pattern}' {fp_to_filter} | zstd -q -T1 -1 -o {res_fp}"
@@ -59,14 +59,17 @@ if __name__ == "__main__":
 
                 fn = fp.split(os.sep)[-1]
                 target_fp = transformer_msgstorage_staging_path + os.sep + fn
-                pretty_fp = path.remove_fp_extension(target_fp, constants.FileExtension.EXTRACTOR_MSGSTORAGE_DONE.value)
+                pretty_fp = path.remove_fp_extension(target_fp, constants.FileExtension.EXTRACTOR_MSGSTORAGE_DONE.value) \
+                    + "." + constants.FileExtension.TEXT.value
                 compressed_fp = pretty_fp + "." + constants.FileExtension.ZST_COMPRESSED.value
 
                 command = f"zstd --rm -q -1 {target_fp} -o {compressed_fp}"
                 tsubprocess.run_blocking_command(command)
 
-                filter_msgs(compressed_fp, pretty_fp, constants.FIXMsgField.TICK, constants.FileExtension.TICKS.value)
-                filter_msgs(compressed_fp, pretty_fp, constants.FIXMsgField.QUOTE, constants.FileExtension.QUOTES.value)
+                filter_msgs(
+                    compressed_fp, pretty_fp, constants.FIXMsgField.TICK.value, constants.FileExtension.TICKS.value)
+                filter_msgs(
+                    compressed_fp, pretty_fp, constants.FIXMsgField.QUOTE.value, constants.FileExtension.QUOTES.value)
                 filter_msgs(compressed_fp, pretty_fp, constants.FIXMsgField.FIN_INSTRUMENT_LIST.value,
                             constants.FileExtension.FIN_INSTRUMENTS_LIST.value)
 

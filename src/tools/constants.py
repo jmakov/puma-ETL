@@ -34,9 +34,10 @@ class FileExtension(enum.Enum):
     ZST_COMPRESSED = "zst"
     TMP = "tmp"
     PCAP = "pcap"
+    TEXT = "txt"
 
 
-class FIXMsgField:
+class FIXMsgField(enum.Enum):
     TICK = "35=W"
     QUOTE = "35=X"
     FIN_INSTRUMENT_LIST = "35=y"
