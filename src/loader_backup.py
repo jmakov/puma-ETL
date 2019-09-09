@@ -35,11 +35,12 @@ if __name__ == "__main__":
             + constants.FileExtension.TRANSFORMER_DONE.value
 
         tshutil.create_dir(loader_backup_staging_path)
-
-        files_to_move = tshutil.find_files(fp_from_transformer_pcap)
-        files_to_move += tshutil.find_files(fp_from_transformer_msgstorage)
+        tshutil.create_dir(backup_path)
 
         while True:
+            files_to_move = tshutil.find_files(fp_from_transformer_pcap)
+            files_to_move += tshutil.find_files(fp_from_transformer_msgstorage)
+
             for fp in files_to_move:
                 tshutil.move(fp, loader_backup_staging_path)
 

@@ -145,9 +145,9 @@ def parse_transformer_result_fp(fp_wo_extension, feed_name_account_data_map):
     fn = fp_wo_extension.split(os.sep)[-1]
 
     if constants.PCAP_BASE_NAME in fn:
-        feed_name, timestamp = parse_extractor_pcap_file(fp_wo_extension)
+        feed_name, timestamp = parse_extractor_pcap_file(fn)
     else:
-        feed_name, timestamp = parse_extractor_msgstorage_file(fp_wo_extension, feed_name_account_data_map)
+        feed_name, timestamp = parse_extractor_msgstorage_file(fn, feed_name_account_data_map)
 
     return feed_name, timestamp
 

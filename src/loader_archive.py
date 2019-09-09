@@ -32,9 +32,10 @@ if __name__ == "__main__":
 
         fp_from_loader_backup_staging_path = loader_backup_staging_path + os.sep + "*." \
             + constants.FileExtension.LOADER_BACKUP_DONE.value
-        files_to_move = tshutil.find_files(fp_from_loader_backup_staging_path)
 
         while True:
+            files_to_move = tshutil.find_files(fp_from_loader_backup_staging_path)
+
             for fp in files_to_move:
                 tshutil.move(fp, loader_archive_staging_path)
 

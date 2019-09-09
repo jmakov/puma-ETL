@@ -32,7 +32,7 @@ def rename_transformer_done(fp):
 
 
 def rename_loader_backup_done(fp):
-    fin_fn = fp + "." + constants.FileExtension.TRANSFORMER_DONE.value
+    fin_fn = fp + "." + constants.FileExtension.LOADER_BACKUP_DONE.value
     os.rename(fp, fin_fn)
 
 
@@ -64,7 +64,11 @@ def create_loader_dirs(loader_target_dir_path, feed_name, timestamp):
 
     # parse timestamp
     parsed_timestamp = time.strptime(timestamp, "%Y%m%d%H%M%S")
-    year_month_dir_path = feed_name_dir_path + os.sep + parsed_timestamp.tm_year + "-" + parsed_timestamp.tm_mon
+    year_month_dir_path = feed_name_dir_path \
+        + os.sep \
+        + str(parsed_timestamp.tm_year) \
+        + "-" \
+        + str(parsed_timestamp.tm_mon)
     create_dir(year_month_dir_path)
 
     return year_month_dir_path
