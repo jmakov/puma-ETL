@@ -22,9 +22,8 @@ def filter_msgs(fp_to_filter, original_fp, pattern, resulting_fp_extension):
     check_match_command = f"zstdgrep -m 1 '{pattern} {fp_to_filter}"
 
     if tsubprocess.match_found(check_match_command):
-        command1 = f"zstdgrep '{pattern}' {fp_to_filter}"
-        command2 = "zstd -q -T1 -1 -o {res_fp}"
-        tsubprocess.run_command_with_pipes(command1, command2)
+        command = f"zstdgrep '{pattern}' {fp_to_filter} | zstd -q -T1 -1 -o {res_fp}"
+        tsubprocess.run_command_with_pipes(command)
         tshutil.rename_transformer_done(res_fp)
 
 

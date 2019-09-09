@@ -44,12 +44,12 @@ def extract_incomming_msgs_for_account(compressed_pcap_fp, feed_name, sender_com
     check_match_command = f"zstdgrep -a -m 1 {pattern} {compressed_pcap_fp}"
 
     if tsubprocess.match_found(check_match_command):
-        command1 = f"zstdcat {compressed_pcap_fp}"
-        command2 = f"ngrep -I - -O {tmp_fn} -q {pattern}"
-        tsubprocess.run_command_with_pipes(command1, command2)
+        command = f"zstdcat {compressed_pcap_fp} | ngrep -I - -O {tmp_fn} -q {pattern} > /dev/null"
+        tsubprocess.run_command_with_pipes(command)
 
-        compress_command = f"zstd -T1 --rm -q -1 {tmp_fn} -o {res_fp}"
-        tsubprocess.run_blocking_command(compress_command)
+        compression_command = f"zstd -T1 --rm -q -1 {tmp_fn} -o {res_fp}"
+        tsubprocess.run_blocking_command(compression_command)
+
         tshutil.rename_transformer_done(res_fp)
 
 
