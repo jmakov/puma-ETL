@@ -114,7 +114,7 @@ def parse_extractor_msgstorage_file(fn, feed_name_account_data_map):
     _feed_info, _, _fix_info_with_ts_and_extensions = fn.split("-")
     _fix_info_with_ts = _fix_info_with_ts_and_extensions.split(".")[0]
     _extended_timestamp = _fix_info_with_ts.split("_")[-1]
-    timestamp = _extended_timestamp[:-8]
+    timestamp = _extended_timestamp[:14]    # OnixS FIX lib names a file sometimes with different timestamp precision
 
     # sender_comp_id can be  "integer" or "feedID.integer". In MsgStorage this is serialized as
     # "integer-..." or "feedID_integer-..."
