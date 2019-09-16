@@ -30,13 +30,13 @@ SLEEP = 60
 logger = logging.getLogger()
 
 
-def extract_incomming_msgs_for_account(compressed_pcap_fp, feed_name, sender_comp_id):
+def extract_incomming_msgs_for_account(staging_path, compressed_pcap_fp, feed_name, sender_comp_id):
     tmp_fn = compressed_pcap_fp + "." + constants.FileExtension.TMP.value
 
     # construct resulting file name of the form puma-recorder_[feed name]_[acc ID]_[timestamp].pcap.zst
     fn = compressed_fp.split(os.sep)[-1]
     _, timestamp = path.parse_extractor_pcap_file(fn)
-    res_fp = path.get_transformer_pcap_resulting_fp(feed_name, sender_comp_id, timestamp)
+    res_fp = path.get_transformer_pcap_resulting_fp(staging_path, feed_name, sender_comp_id, timestamp)
 
     # With some patterns we might get no results. Since we don't want to produce files with 0 size, we check first
     # if we have any matches.
@@ -88,7 +88,8 @@ if __name__ == "__main__":
                 time.sleep(1)
 
                 for feed_name, sender_comp_id in feed_name_account_data_map.items():
-                    extract_incomming_msgs_for_account(compressed_fp, feed_name, sender_comp_id)
+                    extract_incomming_msgs_for_account(
+                        transformer_pcap_staging_path, compressed_fp, feed_name, sender_comp_id)
 
                 tshutil.rename_transformer_done(compressed_fp)
             time.sleep(SLEEP)

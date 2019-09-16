@@ -18,15 +18,20 @@ if __name__ == "__main__":
 
         if len(sys.argv) == 2:
             backup_path = sys.argv[1]
+            loader_backup_staging_path = path.get_loader_backup_staging_path()
+            transformer_pcap_staging_path = path.get_transformer_pcap_staging_path()
+            transformer_msgstorage_staging_path = path.get_transformer_msgstorage_staging_path()
+        elif len(sys.argv) == 5:
+            backup_path = sys.argv[1]
+            loader_backup_staging_path = sys.argv[2]
+            transformer_pcap_staging_path = sys.argv[3]
+            transformer_msgstorage_staging_path = sys.argv[4]
         else:
-            msg = "Usage: loader.py [backup abs path]"
-            print(msg, file=sys.stderr)
-            logger.exception(msg)
-            sys.exit()
+            raise RuntimeError("Usage: loader_backup.py [backup abs path] "
+                               "([loader_backup_staging_path]) "
+                               "([transformer_pcap_staging_path]) "
+                               "([transformer_msgstorage_staging_path])")
 
-        transformer_pcap_staging_path = path.get_transformer_pcap_staging_path()
-        transformer_msgstorage_staging_path = path.get_transformer_msgstorage_staging_path()
-        loader_backup_staging_path = path.get_loader_backup_staging_path()
         secrets_fp = path.get_secrets_path()
         feed_name_account_data_map = tshutil.get_fix_feed_name_sendercompid_map(secrets_fp)
         fp_from_transformer_pcap = transformer_pcap_staging_path + os.sep + "*." \

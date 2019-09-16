@@ -82,8 +82,8 @@ def get_loader_archiver_staging_path():
     return _get_staging_sub_path(constants.DirName.LOADER_ARCHIVER.value)
 
 
-def get_transformer_pcap_resulting_fp(feed_name, sender_comp_id, ts):
-    return get_transformer_pcap_staging_path() \
+def get_transformer_pcap_resulting_fp(staging_path, feed_name, sender_comp_id, ts):
+    return staging_path \
            + os.sep \
            + constants.PCAP_BASE_NAME + constants.FN_FROM_TRANSFORMER_SPLIT \
            + feed_name + constants.FN_FROM_TRANSFORMER_SPLIT \

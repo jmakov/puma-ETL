@@ -17,15 +17,18 @@ if __name__ == "__main__":
         log.configure_logger(logger, THIS_SCRIPT_NAME)
 
         if len(sys.argv) == 2:
-            backup_path = sys.argv[1]
+            archival_path = sys.argv[1]
+            loader_archive_staging_path = path.get_loader_archiver_staging_path()
+            loader_backup_staging_path = path.get_loader_backup_staging_path()
+        elif len(sys.argv) == 4:
+            archival_path = sys.argv[1]
+            loader_archive_staging_path = sys.argv[2]
+            loader_backup_staging_path = sys.argv[3]
         else:
-            msg = "Usage: loader.py [archive abs path]"
-            print(msg, file=sys.stderr)
-            logger.exception(msg)
-            sys.exit()
+            raise RuntimeError("Usage: loader_archiver.py [archival abs path] "
+                               "([loader_archive_staging_path]) "
+                               "([loader_backup_staging_path])")
 
-        loader_archive_staging_path = path.get_loader_archiver_staging_path()
-        loader_backup_staging_path = path.get_loader_backup_staging_path()
         secrets_fp = path.get_secrets_path()
         feed_name_account_data_map = tshutil.get_fix_feed_name_sendercompid_map(secrets_fp)
         tshutil.create_dir(loader_archive_staging_path)
@@ -49,7 +52,7 @@ if __name__ == "__main__":
                 # extract info from fn so we can save files to backup_path/[feed_name]/[year]-[month]
                 feed_name, timestamp = path.parse_transformer_result_fp(pretty_fp, feed_name_account_data_map)
 
-                year_month_dir_path = tshutil.create_loader_dirs(backup_path, feed_name, timestamp)
+                year_month_dir_path = tshutil.create_loader_dirs(archival_path, feed_name, timestamp)
                 tshutil.move(pretty_fp, year_month_dir_path)
             time.sleep(SLEEP)
     except Exception as e:
