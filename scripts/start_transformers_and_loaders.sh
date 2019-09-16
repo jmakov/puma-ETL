@@ -7,6 +7,6 @@ sleep 1 # make time for dir creation
 sleep 1 # make time for dir creation
 /opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/transformer_msgstorage.py &
 sleep 1 # make time for dir creation
-/opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/loader_backup.py /mnt/external/staging/backup &
+/opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/loader_backup.py /dev/null &
 sleep 1 # make time for dir creation
 /opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/loader_archive.py /mnt/gdrive/project_data/puma-recorder &

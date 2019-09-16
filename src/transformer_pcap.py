@@ -56,9 +56,14 @@ def extract_incomming_msgs_for_account(compressed_pcap_fp, feed_name, sender_com
 if __name__ == "__main__":
     try:
         log.configure_logger(logger, THIS_SCRIPT_NAME)
+
+        if len(sys.argv) == 2:
+            transformer_pcap_staging_path = sys.argv[1]
+        else:
+            transformer_pcap_staging_path = path.get_transformer_pcap_staging_path()
+
         secrets_fp = path.get_secrets_path()
         extractor_pcap_staging_path = path.get_extractor_pcap_staging_path()
-        transformer_pcap_staging_path = path.get_transformer_pcap_staging_path()
         feed_name_account_data_map = tshutil.get_fix_feed_name_sendercompid_map(secrets_fp)
         pcap_fp_pattern_to_move = extractor_pcap_staging_path + os.sep + "*." \
             + constants.FileExtension.EXTRACTOR_PCAP_DONE.value

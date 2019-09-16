@@ -39,9 +39,14 @@ def delete_extractor_msgstore_redundant_files(fp_pattern):
 if __name__ == "__main__":
     try:
         log.configure_logger(logger, THIS_SCRIPT_NAME)
+
+        if len(sys.argv) == 2:
+            transformer_msgstorage_staging_path = sys.argv[1]
+        else:
+            transformer_msgstorage_staging_path = path.get_transformer_msgstorage_staging_path()
+
         secrets_fp = path.get_secrets_path()
         extractor_msgstorage_staging_path = path.get_extractor_staging_msgstorage_path()
-        transformer_msgstorage_staging_path = path.get_transformer_msgstorage_staging_path()
         msgs_fp_pattern_to_move = extractor_msgstorage_staging_path + os.sep + "*." \
             + constants.FileExtension.EXTRACTOR_MSGSTORAGE_DONE.value
         files_to_delete_pattern = extractor_msgstorage_staging_path + os.sep + "*." \
