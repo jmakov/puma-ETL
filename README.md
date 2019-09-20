@@ -7,6 +7,18 @@ Define env variables:
 * PUMA_SECRETS_PATH
 * PUMA_ETL_STAGING_PATH
 
+Run extractor that generates 10GB pcap file:
+```shell script
+/opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/extractor.py enp1s0 10 &
+```
+
+Start transformers that backup to `/mnt/backup` and archive to `/mnt/gdrive/project_data/puma-recorder`:
+```shell script
+/opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/transformer_pcap.py &
+/opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/transformer_msgstorage.py &
+/opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/loader_backup.py /mnt/backup &
+/opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/loader_archive.py /mnt/gdrive/project_data/puma-recorder
+```
 ## Dependencies:
 * [puma](https://github.com/jmakov/puma)
 * [gulp](https://github.com/jmakov/gulp)
@@ -15,8 +27,8 @@ Define env variables:
 # Crontab
 Configure crontab to point to bin/crontab-*:
 ```
-0 1 * * 6 /mnt/lvm_volume/dont_delete/workdir/puma/bin/crontab-stop_recorder_and_archive_and_upload.sh
-30 0 * * 1 /mnt/lvm_volume/dont_delete/workdir/puma/bin/crontab-start_all_recorders.sh
+0 10 * * 6 /opt/puma/puma-ETL/scripts/crontab-extractor_stop.sh
+30 0 * * 1 /opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/extractor.py enp1s0 10
 ```
 
 
