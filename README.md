@@ -31,13 +31,15 @@ Configure crontab to point to bin/crontab-*:
 30 0 * * 1 /opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/extractor.py enp1s0 10
 ```
 
+# Development
+Set `PUMA_DEV_ENV=1`
+
+If using tcpdump:
 
 Update AppArmor to allow tcpdump execute post rotate command 
 ```
 sudo aa-complain /usr/sbin/tcpdump
 ```
-# Development
-Set `PUMA_DEV_ENV=1`
 
 One approach to filter FIX msgs from [SO](https://stackoverflow.com/questions/13810156/tshark-export-fix-messages):
 
