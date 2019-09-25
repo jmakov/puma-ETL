@@ -27,7 +27,7 @@ def is_dev_environemnt():
 
 
 def get_scripts_path():
-    return "scripts" if is_dev_environemnt() else "/opt/puma/puma-ETL/bin"
+    return "scripts" if is_dev_environemnt() else "/opt/puma/puma-ETL/scripts"
 
 
 def get_network_recorder_postrotate_script_path():
