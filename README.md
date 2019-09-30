@@ -3,7 +3,7 @@
 git clone --recurse-submodules -j8 git@github.com:jmakov/puma-ETL.git
 cd puma-ETL && ./scripts/install.sh
 ```
-Define env variables:
+Define env variables in `~/.profile`:
 * PUMA_SECRETS_PATH
 * PUMA_ETL_STAGING_PATH
 

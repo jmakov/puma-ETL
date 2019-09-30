@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source ~/.bashrc
+source ~/.profile
 RECORDER_PROCESS_NAME="puma-recorder"
 
 # Stop recording and make sure all recording processes are really ended (since they can hang sometimes)
