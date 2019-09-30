@@ -27,8 +27,8 @@ Start transformers that backup to `/mnt/backup` and archive to `/mnt/gdrive/proj
 # Crontab
 Configure crontab to point to bin/crontab-*:
 ```
-0 10 * * 6 /opt/puma/puma-ETL/scripts/crontab-extractor_stop.sh
-30 0 * * 1 /opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/extractor.py enp1s0 10
+1 0 * * 1 /opt/puma/puma-ETL/scripts/crontab-extractor_stop.sh
+2 0 * * 1 /opt/puma/puma-ETL/scripts/crontab-extractor_start.sh enp1s0 100
 ```
 
 # Development
