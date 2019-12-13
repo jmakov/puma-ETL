@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-INSTALL_PATH=/opt/puma/puma-ETL
+source ~/.profile
+
+INSTALL_PATH=/opt/puma-ETL
+
 
 sudo rm -rf $INSTALL_PATH
-sudo rm -rf /var/log/puma/puma-ETL
-sudo rm -rf $PUMA_ETL_STAGING_PATH
+
+echo "Data and log dir are not deleted."
