@@ -27,7 +27,7 @@ def is_dev_environemnt():
 
 
 def get_scripts_path():
-    return "scripts" if is_dev_environemnt() else "/opt/puma/puma-ETL/scripts"
+    return "scripts" if is_dev_environemnt() else "/opt/puma-ETL/scripts"
 
 
 def get_network_recorder_postrotate_script_path():
@@ -39,15 +39,11 @@ def get_network_recorder_command_path():
 
 
 def get_puma_recorder_executable_path():
-    return "/opt/puma/puma-recorder/bin/puma-recorder"
-
-
-def get_recorder_log_path():
-    return "/var/log/puma/puma-recorder"
+    return "/opt/puma/bin/puma-recorder"
 
 
 def get_etl_log_path():
-    return "/var/log/puma/puma-ETL"
+    return "/var/log/puma-ETL"
 
 
 def get_secrets_path():
