@@ -60,22 +60,22 @@ if __name__ == "__main__":
         logger.info(f"filter expression: {filter_expression}")
 
         # Start network recording. We'll filter network traffic by destination host ports.
-        network_recording_command_flags = f'-t ' \
-                                          f'-r 1024 ' \
-                                          f'-C {pcap_file_size} ' \
-                                          f'-n {constants.PCAP_BASE_NAME} ' \
-                                          f'-o {extractor_staging_path} ' \
-                                          f'-i {interface_name} ' \
-                                          f'-Z {postrotate_script_path} ' \
-                                          f'-f "{filter_expression}"'
-        network_recording_command = path.get_network_recorder_command_path() + " " + network_recording_command_flags
-        logger.info(f"Starting: {network_recording_command}")
-        args = shlex.split(network_recording_command)   # determines correct args tokenization
-        p = subprocess.Popen(args)
-        process_list.append(p)
-
-        # wait for buffers of network_recording_command to init
-        time.sleep(5)
+        # network_recording_command_flags = f'-t ' \
+        #                                   f'-r 1024 ' \
+        #                                   f'-C {pcap_file_size} ' \
+        #                                   f'-n {constants.PCAP_BASE_NAME} ' \
+        #                                   f'-o {extractor_staging_path} ' \
+        #                                   f'-i {interface_name} ' \
+        #                                   f'-Z {postrotate_script_path} ' \
+        #                                   f'-f "{filter_expression}"'
+        # network_recording_command = path.get_network_recorder_command_path() + " " + network_recording_command_flags
+        # logger.info(f"Starting: {network_recording_command}")
+        # args = shlex.split(network_recording_command)   # determines correct args tokenization
+        # p = subprocess.Popen(args)
+        # process_list.append(p)
+        #
+        # # wait for buffers of network_recording_command to init
+        # time.sleep(5)
 
         # connect to exchanges and brokers
         for feed_name in quote_feed_names:
