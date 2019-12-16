@@ -2,4 +2,4 @@
 
 source ~/.profile
 
-/opt/puma/puma-ETL/venv/bin/python3 /opt/puma-ETL/src/extractor.py $1 $2
+/opt/puma-ETL/venv/bin/python3 /opt/puma-ETL/src/extractor.py $1 $2
