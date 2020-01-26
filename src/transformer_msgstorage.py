@@ -71,12 +71,12 @@ if __name__ == "__main__":
                 command = f"zstd --rm -q -1 {target_fp} -o {compressed_fp}"
                 tsubprocess.run_blocking_command(command)
 
-                filter_msgs(
-                    compressed_fp, pretty_fp, constants.FIXMsgField.TICK.value, constants.FileExtension.TICKS.value)
-                filter_msgs(
-                    compressed_fp, pretty_fp, constants.FIXMsgField.QUOTE.value, constants.FileExtension.QUOTES.value)
-                filter_msgs(compressed_fp, pretty_fp, constants.FIXMsgField.FIN_INSTRUMENT_LIST.value,
-                            constants.FileExtension.FIN_INSTRUMENTS_LIST.value)
+                # filter_msgs(
+                #     compressed_fp, pretty_fp, constants.FIXMsgField.TICK.value, constants.FileExtension.TICKS.value)
+                # filter_msgs(
+                #     compressed_fp, pretty_fp, constants.FIXMsgField.QUOTE.value, constants.FileExtension.QUOTES.value)
+                # filter_msgs(compressed_fp, pretty_fp, constants.FIXMsgField.FIN_INSTRUMENT_LIST.value,
+                #             constants.FileExtension.FIN_INSTRUMENTS_LIST.value)
 
                 # mark compressed original as processed so we can include it in the next stage
                 tshutil.rename_transformer_done(compressed_fp)
