@@ -68,7 +68,7 @@ if __name__ == "__main__":
                     + "." + constants.FileExtension.TEXT.value
                 compressed_fp = pretty_fp + "." + constants.FileExtension.ZST_COMPRESSED.value
 
-                command = f"zstd --rm -q -1 {target_fp} -o {compressed_fp}"
+                command = f"zstd --rm -q -9 {target_fp} -o {compressed_fp}"
                 tsubprocess.run_blocking_command(command)
 
                 # filter_msgs(
