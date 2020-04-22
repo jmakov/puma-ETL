@@ -46,8 +46,8 @@ def get_etl_log_path():
     return "/var/log/puma-ETL"
 
 
-def get_secrets_path():
-    return _get_env_var(constants.Env.SECRETS_PATH.value)
+def get_path_feeds_config():
+    return "feeds.yaml" if is_dev_environemnt() else "/etc/puma/feeds.yaml"
 
 
 def get_staging_path():

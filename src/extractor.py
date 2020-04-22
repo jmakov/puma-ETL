@@ -34,7 +34,7 @@ if __name__ == "__main__":
             logger.exception(msg)
             sys.exit()
 
-        secrets_path = path.get_secrets_path()
+        feeds_config_fp = path.get_path_feeds_config()
         postrotate_script_path = path.get_network_recorder_postrotate_script_path()
         recorder_executable_path = path.get_puma_recorder_executable_path()
         extractor_staging_path = path.get_extractor_pcap_staging_path()
@@ -46,7 +46,7 @@ if __name__ == "__main__":
         tshutil.create_dir(msg_storage_path)
 
         # parse secrets yaml file to get feed names and hosts
-        with open(secrets_path) as f:
+        with open(feeds_config_fp) as f:
             content = yaml.load(f, Loader=yaml.FullLoader)
 
             for feed in content["exchange_feeds"]:

@@ -9,7 +9,6 @@ RAW_FILES_DIR_NAME = "raw"
 
 class Env(enum.Enum):
     DEV_ENV = "PUMA_DEV_ENV"
-    SECRETS_PATH = "PUMA_SECRETS_PATH"
     STAGING_PATH = "PUMA_ETL_STAGING_PATH"
 
 

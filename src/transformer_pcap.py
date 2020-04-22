@@ -62,9 +62,9 @@ if __name__ == "__main__":
         else:
             transformer_pcap_staging_path = path.get_transformer_pcap_staging_path()
 
-        secrets_fp = path.get_secrets_path()
+        feeds_config_fp = path.get_path_feeds_config()
         extractor_pcap_staging_path = path.get_extractor_pcap_staging_path()
-        feed_name_account_data_map = tshutil.get_fix_feed_name_sendercompid_map(secrets_fp)
+        feed_name_account_data_map = tshutil.get_fix_feed_name_sendercompid_map(feeds_config_fp)
         pcap_fp_pattern_to_move = extractor_pcap_staging_path + os.sep + "*." \
             + constants.FileExtension.EXTRACTOR_PCAP_DONE.value
 

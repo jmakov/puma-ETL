@@ -1,0 +1,12 @@
+exchange_feeds:
+  - name: FONDEX_CTRADER_QUOTE_FEED
+    heartbeat: 30
+    reconnect_interval: 30
+    sender_comp_ID: fondex.3013302
+    sender_sub_ID: QUOTE
+    target_comp_ID: CSERVER
+    username: 3013302
+    password: abc123
+    reset_seq_num_on_login: true
+    host: h51.p.ctrader.com
+    port: 5201

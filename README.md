@@ -4,7 +4,6 @@ git clone --recurse-submodules -j8 git@github.com:jmakov/puma-ETL.git
 cd puma-ETL && ./scripts/install.sh
 ```
 Define env variables in `~/.profile`:
-* PUMA_SECRETS_PATH
 * PUMA_ETL_STAGING_PATH
 
 Run extractor that generates 10GB pcap file:
@@ -25,7 +24,7 @@ Start transformers that backup to `/mnt/backup` and archive to `/mnt/gdrive/proj
 * (optional) [google-drive-ocamlfuse](https://github.com/astrada/google-drive-ocamlfuse/)
 
 # Crontab
-Configure crontab to point to bin/crontab-*:
+Config crontab for user `puma`: `sudo crontab -u puma -e
 ```
 1 0 * * 1 /opt/puma/puma-ETL/scripts/crontab-extractor_stop.sh
 2 0 * * 1 /opt/puma/puma-ETL/scripts/crontab-extractor_start.sh enp1s0 100
