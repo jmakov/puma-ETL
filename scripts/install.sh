@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 source ~/.profile
-
 INSTALL_PATH=/opt/puma-ETL
 
 
@@ -22,6 +21,6 @@ source $INSTALL_PATH/venv/bin/activate
 sudo $INSTALL_PATH/venv/bin/pip3 install -r requirements.txt
 
 # setup system log dir
-sudo useradd --system puma-ETL
+sudo useradd --system puma
 sudo mkdir -p /var/log/puma-ETL
-sudo chown -R puma-ETL:puma-ETL /var/log/puma-ETL/
+sudo chown -R puma:puma /var/log/puma-ETL
