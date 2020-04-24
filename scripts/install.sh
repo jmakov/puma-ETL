@@ -18,7 +18,7 @@ sudo cp -rf scripts $INSTALL_PATH
 echo "Creating python virtual environment"
 sudo python3 -m venv $INSTALL_PATH/venv
 source $INSTALL_PATH/venv/bin/activate
-sudo $INSTALL_PATH/venv/bin/pip3 wheel
+sudo $INSTALL_PATH/venv/bin/pip3 install wheel
 sudo $INSTALL_PATH/venv/bin/pip3 install -r requirements.txt
 
 # setup system log dir
