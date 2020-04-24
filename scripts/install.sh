@@ -3,7 +3,7 @@
 source ~/.profile
 INSTALL_PATH=/opt/puma-ETL
 
-
+sudo rm -rf $INSTALL_PATH/venv
 sudo mkdir -p $INSTALL_PATH
 
 # install dependencies
