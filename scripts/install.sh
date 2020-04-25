@@ -23,4 +23,4 @@ sudo $INSTALL_PATH/venv/bin/pip3 install -r requirements.txt
 # setup system log dir
 sudo mkdir -p /var/log/puma-ETL
 sudo chown root:puma /var/log/puma-ETL
-sudo chmod 771 /var/log/puma-ETL
+sudo chmod 775 /var/log/puma-ETL

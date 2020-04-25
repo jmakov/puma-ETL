@@ -5,6 +5,11 @@
     cd puma-ETL && ./scripts/install.sh
     ```
 2. copy `examples/feeds.yaml` and `examples/puma-ETL.yaml` to `/etc/puma/` and edit them
+3. set file permissions
+    ```shell script
+    sudo chown root:puma /etc/puma/*
+    sudo chmod 640 /etc/puma*
+    ```
 
 # Usage
 ```shell script

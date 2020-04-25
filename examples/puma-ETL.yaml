@@ -1,1 +1,1 @@
-STAGING_PATH=/mnt/nvmepool/staging
+STAGING_PATH: /mnt/nvmepool/staging
