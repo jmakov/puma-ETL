@@ -32,7 +32,7 @@ if __name__ == "__main__":
                                "([transformer_pcap_staging_path]) "
                                "([transformer_msgstorage_staging_path])")
 
-        feeds_config_fp = path.get_path_feeds_config()
+        feeds_config_fp = path.get_path_config_feeds()
         feed_name_account_data_map = tshutil.get_fix_feed_name_sendercompid_map(feeds_config_fp)
         fp_from_transformer_pcap = transformer_pcap_staging_path + os.sep + "*." \
             + constants.FileExtension.TRANSFORMER_DONE.value

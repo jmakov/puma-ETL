@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-source ~/.profile
 INSTALL_PATH=/opt/puma-ETL
 
 sudo rm -rf $INSTALL_PATH/venv
@@ -22,6 +21,6 @@ sudo $INSTALL_PATH/venv/bin/pip3 install wheel
 sudo $INSTALL_PATH/venv/bin/pip3 install -r requirements.txt
 
 # setup system log dir
-sudo useradd --system puma
 sudo mkdir -p /var/log/puma-ETL
 sudo chown -R puma:puma /var/log/puma-ETL
+sudo chmod -R 640 /var/log/puma-ETL

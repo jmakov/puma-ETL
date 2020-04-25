@@ -3,3 +3,6 @@ venv
 /staging
 /backup
 /archiving
+/log
+/puma-ETL.yaml
+/feeds.yaml

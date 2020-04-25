@@ -1,14 +1,14 @@
 # Getting started
-```
-git clone --recurse-submodules -j8 git@github.com:jmakov/puma-ETL.git
-cd puma-ETL && ./scripts/install.sh
-```
-Define env variables in `~/.profile`:
-* PUMA_ETL_STAGING_PATH
+1. Clone the repo 
+    ```shell script
+    git clone --recurse-submodules -j8 git@github.com:jmakov/puma-ETL.git
+    cd puma-ETL && ./scripts/install.sh
+    ```
+2. copy `examples/feeds.yaml` and `examples/puma-ETL.yaml` to `/etc/puma/` and edit them
 
-Run extractor that generates 10GB pcap file:
+# Usage
 ```shell script
-/opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/extractor.py enp1s0 10 &
+/opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/extractor.py enp1s0 &
 ```
 
 Start transformers that backup to `/mnt/backup` and archive to `/mnt/gdrive/project_data/puma-recorder`:
@@ -25,18 +25,19 @@ Start transformers that backup to `/mnt/backup` and archive to `/mnt/gdrive/proj
 
 # Crontab
 Config crontab for user `puma`: `sudo crontab -u puma -e
-```
+```shell script
 1 0 * * 1 /opt/puma/puma-ETL/scripts/crontab-extractor_stop.sh
-2 0 * * 1 /opt/puma/puma-ETL/scripts/crontab-extractor_start.sh enp1s0 100
+2 0 * * 1 /opt/puma/puma-ETL/scripts/crontab-extractor_start.sh enp1s0
 ```
 
 # Development
-Set `PUMA_DEV_ENV=1`
+1. `$ export PUMA_DEV_ENV=1`.
+2. copy `examples/feeds.yaml` and `examples/puma-ETL.yaml` to project root and edit them 
 
 If using tcpdump:
 
 Update AppArmor to allow tcpdump execute post rotate command 
-```
+```shell script
 sudo aa-complain /usr/sbin/tcpdump
 ```
 

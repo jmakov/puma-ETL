@@ -2,23 +2,22 @@ import logging
 import os
 import sys
 
+import yaml
+
 from tools import constants
 
 logger = logging.getLogger(__name__)
 
 
 def _get_staging_sub_path(dir_name):
-    return get_staging_path() + os.sep + dir_name
+    with open(get_path_config_pumaetl()) as f:
+        content = yaml.load(f, Loader=yaml.FullLoader)
+        staging_path = content["STAGING_PATH"]
 
+    if os.sep not in staging_path:
+        raise RuntimeError("_get_staging_sub_path: variable STAGING_PATH not defined in yaml!")
 
-def _get_env_var(env_var):
-    var = os.getenv(env_var)
-
-    if var is None or var is "":
-        msg = f"Not defined: {env_var}"
-        logger.exception(msg)
-        raise RuntimeError(msg)
-    return var
+    return staging_path + os.sep + dir_name
 
 
 def is_dev_environemnt():
@@ -46,12 +45,12 @@ def get_etl_log_path():
     return "/var/log/puma-ETL"
 
 
-def get_path_feeds_config():
+def get_path_config_feeds():
     return "feeds.yaml" if is_dev_environemnt() else "/etc/puma/feeds.yaml"
 
 
-def get_staging_path():
-    return _get_env_var(constants.Env.STAGING_PATH.value)
+def get_path_config_pumaetl():
+    return "puma-ETL.yaml" if is_dev_environemnt() else "/etc/puma/puma-ETL.yaml"
 
 
 def get_extractor_pcap_staging_path():

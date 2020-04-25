@@ -29,7 +29,7 @@ if __name__ == "__main__":
                                "([loader_archive_staging_path]) "
                                "([loader_backup_staging_path])")
 
-        feeds_config_fp = path.get_path_feeds_config()
+        feeds_config_fp = path.get_path_config_feeds()
         feed_name_account_data_map = tshutil.get_fix_feed_name_sendercompid_map(feeds_config_fp)
         tshutil.create_dir(loader_archive_staging_path)
 
