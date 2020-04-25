@@ -10,7 +10,11 @@
     sudo chown root:puma /etc/puma/*
     sudo chmod 640 /etc/puma*
     ```
-
+4. set staging directory e.g. `/mnt/staging` permissions
+    ```shell script
+    sudo chown -R puma:puma /mnt/staging
+    sudo chmod -R 755 /mnt/staging
+    ```
 # Usage
 ```shell script
 /opt/puma/puma-ETL/venv/bin/python3 /opt/puma/puma-ETL/src/extractor.py enp1s0 &
