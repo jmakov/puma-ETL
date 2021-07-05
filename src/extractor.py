@@ -23,14 +23,6 @@ if __name__ == "__main__":
     try:
         log.configure_logger(logger, THIS_SCRIPT_NAME)
 
-        if len(sys.argv) == 2:
-            interface_name = sys.argv[1]
-        else:
-            msg = "Usage: extractor.py [interface name] [pcap size (in GiB)]"
-            print(msg, file=sys.stderr)
-            logger.exception(msg)
-            sys.exit()
-
         feeds_config_fp = path.get_path_config_feeds()
         recorder_executable_path = path.get_puma_recorder_executable_path()
         extractor_staging_path = path.get_extractor_pcap_staging_path()
@@ -45,8 +37,8 @@ if __name__ == "__main__":
         with open(feeds_config_fp) as f:
             content = yaml.load(f, Loader=yaml.FullLoader)
 
-            for feed in content["exchange_feeds"]:
-                quote_feed_names.append(feed["name"])
+            for feed in content["quote_feeds"]:
+                quote_feed_names.append(feed["feed_name"])
                 quote_feed_hosts.append(feed["host"])
 
         # for tcpdump filter expression we don't want duplicate ports
@@ -61,7 +53,7 @@ if __name__ == "__main__":
 
             # we have to set working dir (cwd) since Onyx FIX lib automatically creates MsgStorage directory and we want
             # to have it in the recorder log folder
-            p = subprocess.Popen([recorder_executable_path, feed_name], cwd=extractor_staging_path)
+            p = subprocess.Popen([recorder_executable_path, "--feed_name " + feed_name], cwd=extractor_staging_path)
             process_list.append(p)
 
         logger.info("All processes running")

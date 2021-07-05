@@ -46,7 +46,7 @@ def get_etl_log_path():
 
 
 def get_path_config_feeds():
-    return "feeds.yaml" if is_dev_environemnt() else "/etc/puma/feeds.yaml"
+    return "puma-recorder.yaml" if is_dev_environemnt() else "/etc/puma/puma-recorder.yaml"
 
 
 def get_path_config_pumaetl():
